@@ -6,6 +6,7 @@ import com.otaviosenger.financial.model.Type;
 import com.otaviosenger.financial.repository.TransactionRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -47,6 +48,15 @@ public class TransactionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         transactionRepository.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Transaction> update(@PathVariable Integer id, @RequestBody Transaction transaction) {
+        if (!transactionRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        transaction.setId(id);
+        return ResponseEntity.ok(transactionRepository.save(transaction));
     }
 
 

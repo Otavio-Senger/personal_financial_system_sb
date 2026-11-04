@@ -4,6 +4,7 @@ package com.otaviosenger.financial.controller;
 import com.otaviosenger.financial.model.Category;
 import com.otaviosenger.financial.repository.CategoryRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,15 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         categoryRepository.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> update (@PathVariable Integer id, @RequestBody Category category){
+        if (!categoryRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        category.setId(id);
+        return ResponseEntity.ok(categoryRepository.save(category));
     }
 
 }
