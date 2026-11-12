@@ -1,12 +1,14 @@
 package com.otaviosenger.financial.controller;
 
 
+import com.otaviosenger.financial.exception.ResourceNotFoundException;
+import com.otaviosenger.financial.model.Category;
 import com.otaviosenger.financial.model.Transaction;
 import com.otaviosenger.financial.model.Type;
+import com.otaviosenger.financial.repository.CategoryRepository;
 import com.otaviosenger.financial.repository.TransactionRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -16,9 +18,18 @@ import java.util.List;
 @RequestMapping("/transactions")
 public class TransactionController {
     private final TransactionRepository transactionRepository;
+    private final CategoryRepository categoryRepository;
 
-    public TransactionController(TransactionRepository transactionRepository) {
+    public TransactionController(TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
         this.transactionRepository = transactionRepository;
+        this.categoryRepository = categoryRepository;
+    }
+
+    private void attachCategory(Transaction transaction) {
+        Integer categoryId = transaction.getCategory().getId();
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category " + categoryId + " not found"));
+        transaction.setCategory(category);
     }
 
     @GetMapping
@@ -41,22 +52,27 @@ public class TransactionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Transaction create(@RequestBody Transaction transaction) {
+        attachCategory(transaction);
         return transactionRepository.save(transaction);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
+        if (!transactionRepository.existsById(id)){
+            throw new ResourceNotFoundException("transaction " + id + " not found");
+        }
         transactionRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Transaction> update(@PathVariable Integer id, @RequestBody Transaction transaction) {
+    public Transaction update(@PathVariable Integer id, @RequestBody Transaction transaction) {
         if (!transactionRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("transaction " + id + " not found");
         }
+        attachCategory(transaction);
         transaction.setId(id);
-        return ResponseEntity.ok(transactionRepository.save(transaction));
+        return transactionRepository.save(transaction);
     }
 
 
