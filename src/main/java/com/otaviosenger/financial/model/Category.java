@@ -1,6 +1,9 @@
 package com.otaviosenger.financial.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="categories")
@@ -10,12 +13,17 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //MEANS MySQL GENERATES THE ID
     private Integer id;
 
+    @NotBlank(message = "Name is required")
+    @Size(max = 50, message = "Name must have at most 50 characters")
     @Column(nullable = false, length = 50)
     private String name;
 
+    @NotNull(message = "Type is required (REVENUE or EXPENSES)")
     @Enumerated(EnumType.STRING) //SAVES THE ENUM NAME AS TEXT
     @Column(nullable = false)
     private Type type;
+
+
 
     //CONSTRUCTORS
     public Category(){}

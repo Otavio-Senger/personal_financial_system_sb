@@ -4,6 +4,7 @@ package com.otaviosenger.financial.controller;
 import com.otaviosenger.financial.exception.ResourceNotFoundException;
 import com.otaviosenger.financial.model.Category;
 import com.otaviosenger.financial.repository.CategoryRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Category create(@RequestBody Category category) {
+    public Category create(@Valid @RequestBody Category category) {
         return categoryRepository.save(category);
     }
 
@@ -39,7 +40,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public Category update(@PathVariable Integer id, @RequestBody Category category) {
+    public Category update(@PathVariable Integer id, @Valid @RequestBody Category category) {
         if (!categoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Category " + id + " not found");
         }

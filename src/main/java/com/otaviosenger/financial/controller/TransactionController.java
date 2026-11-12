@@ -7,6 +7,7 @@ import com.otaviosenger.financial.model.Transaction;
 import com.otaviosenger.financial.model.Type;
 import com.otaviosenger.financial.repository.CategoryRepository;
 import com.otaviosenger.financial.repository.TransactionRepository;
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +52,7 @@ public class TransactionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Transaction create(@RequestBody Transaction transaction) {
+    public Transaction create(@Valid @RequestBody Transaction transaction) {
         attachCategory(transaction);
         return transactionRepository.save(transaction);
     }
@@ -66,7 +67,7 @@ public class TransactionController {
     }
 
     @PutMapping("/{id}")
-    public Transaction update(@PathVariable Integer id, @RequestBody Transaction transaction) {
+    public Transaction update(@PathVariable Integer id, @Valid @RequestBody Transaction transaction) {
         if (!transactionRepository.existsById(id)) {
             throw new ResourceNotFoundException("transaction " + id + " not found");
         }

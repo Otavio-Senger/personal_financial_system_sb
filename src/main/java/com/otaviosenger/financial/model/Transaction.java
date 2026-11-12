@@ -1,6 +1,10 @@
 package com.otaviosenger.financial.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,15 +17,21 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //MEANS THE MySQL GENERATES THE ID
     private Integer id;
 
+    @NotBlank(message = "Description is required")
+    @Size(max = 100, message = "Description must have at most 100 characters")
     @Column(name = "descriptions", nullable = false, length = 100)
     private String description;
 
+    @NotNull(message = "Amount is required")
+    @Positive(message = "Amount ,must be greater than zero")
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
+    @NotNull(message = "Date is required")
     @Column(name = "dates", nullable = false)
     private LocalDate date;
 
+    @NotNull(message = "Category is required")
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
