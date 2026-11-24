@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/categories") //ENDPOINTS STARTS WITH /categories
 public class CategoryController {
-    private final CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository; //CategoryRepository METHODS
 
     public CategoryController(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
@@ -29,10 +29,11 @@ public class CategoryController {
     public Category create(@Valid @RequestBody Category category) {
         return categoryRepository.save(category);
     }
+    //REQUEST BODY: TRANSFORM A JSON INTO A JAVA OBJECT (Category category)
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable Integer id) { //PATH VARIABLE: ONLY ID AS PARAM
         if (!categoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Category " + id + " not found");
         }
@@ -44,7 +45,7 @@ public class CategoryController {
         if (!categoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Category " + id + " not found");
         }
-        category.setId(id);
+        category.setId(id); //JSON DOESN'T SEND ID TO THE JAVA OBJECT, SO THIS LINE MAKE THIS
         return categoryRepository.save(category);
     }
 

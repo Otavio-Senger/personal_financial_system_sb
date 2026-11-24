@@ -13,9 +13,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //MEANS MySQL GENERATES THE ID
     private Integer id;
 
-    @NotBlank(message = "Name is required")
-    @Size(max = 50, message = "Name must have at most 50 characters")
-    @Column(nullable = false, length = 50)
+    @NotBlank(message = "Name is required") //PREVENTS THE FIELD FROM BEING EMPTY
+    @Size(max = 50, message = "Name must have at most 50 characters") // DETERMINES THE MAX SIZE OF THE FIELD
+    @Column(nullable = false, length = 50) //HOW THE ATTRIBUTE WILL BE REPRESENTED IN THE DATABASE
     private String name;
 
     @NotNull(message = "Type is required (REVENUE or EXPENSES)")
@@ -60,7 +60,7 @@ public class Category {
     }
 
     @Override
-    public String toString() {
+    public String toString() { //TRANSFORM OBJECT INFORMATION INTO A TEXTUAL REPRESENTATION
         return "Category{" +
                 "id=" + id +
                 ", name='" + name + '\'' +

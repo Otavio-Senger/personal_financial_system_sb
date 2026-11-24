@@ -11,24 +11,24 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/reports")
+@RequestMapping("/reports") //ENDPOINT STARTS WITH /reports
 public class ReportController {
 
-    private final TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository; //TransactionRepository METHODS
 
     public ReportController(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
     }
 
     @GetMapping("/inflow-outflow")
-    public Map<String, BigDecimal> inflowAndOutflow() {
+    public Map<String, BigDecimal> inflowAndOutflow() { //Map<key, value>
         BigDecimal revenue = Objects.requireNonNullElse(
-                transactionRepository.sumByType(Type.REVENUE), BigDecimal.ZERO);
+                transactionRepository.sumByType(Type.REVENUE), BigDecimal.ZERO); //Objects.requireNonNullElse(value, default value)
         BigDecimal expenses = Objects.requireNonNullElse(
                 transactionRepository.sumByType(Type.EXPENSES), BigDecimal.ZERO);
 
         return Map.of(
-                "totalRevenue", revenue,
+                "totalRevenue", revenue, // KEY, VALUE
                 "totalExpenses", expenses,
                 "balance", revenue.subtract(expenses));
     }

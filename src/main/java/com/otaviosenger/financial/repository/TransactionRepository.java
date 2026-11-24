@@ -12,12 +12,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
+public interface TransactionRepository extends JpaRepository<Transaction, Integer> { //INTEGER = ID
 
+    // METHODS THAT ARE PART OF SPRING DATA JPA
     List<Transaction> findByCategory_Id(Integer category);
     List<Transaction> findByCategory_Type(Type type);
     List<Transaction> findByDateBetween(LocalDate startDate, LocalDate endDate);
 
+    // PERSONALIZED CONSULTATION
     @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.category.type = :type")
     BigDecimal sumByType(@Param("type")Type type);
 

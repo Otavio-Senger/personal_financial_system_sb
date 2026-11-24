@@ -10,21 +10,21 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "transactions") //TABLE NAME IN THE DATABASE
 public class Transaction {
 
     @Id  //PRIMARY KEY
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //MEANS THE MySQL GENERATES THE ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //MEANS THE MySQL GENERATES THE ID AUTOMATICALLY
     private Integer id;
 
-    @NotBlank(message = "Description is required")
-    @Size(max = 100, message = "Description must have at most 100 characters")
-    @Column(name = "descriptions", nullable = false, length = 100)
+    @NotBlank(message = "Description is required")//PREVENTS THE FIELD FROM BEING EMPTY
+    @Size(max = 100, message = "Description must have at most 100 characters") //DETERMINES THE MAX SIZE OF THE FIELD
+    @Column(name = "descriptions", nullable = false, length = 100) // HOW THE ATTRIBUTE WILL BE REPRESENTED IN THE DATABASE
     private String description;
 
     @NotNull(message = "Amount is required")
-    @Positive(message = "Amount ,must be greater than zero")
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Positive(message = "Amount must be greater than zero") //DECIMAL PLACES NUMBER
+    @Column(nullable = false, precision = 10, scale = 2) //HAS THE SAME NAME AS IN THE DATABASE
     private BigDecimal amount;
 
     @NotNull(message = "Date is required")
@@ -33,7 +33,7 @@ public class Transaction {
 
     @NotNull(message = "Category is required")
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false) //FOREIGN KEY
     private Category category;
 
     //CONSTRUCTORS
@@ -93,7 +93,7 @@ public class Transaction {
     }
 
     @Override
-    public String toString() {
+    public String toString() { //TRANSFORM OBJECT INFORMATION INTO A TEXTUAL REPRESENTATION
         return "Transaction{" +
                 "id=" + id +
                 ", description='" + description + '\'' +

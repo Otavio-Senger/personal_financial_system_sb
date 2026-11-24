@@ -16,12 +16,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/transactions")
+@RequestMapping("/transactions") // ENDPOINTS START WITH /transactions
 public class TransactionController {
-    private final TransactionRepository transactionRepository;
-    private final CategoryRepository categoryRepository;
+    private final TransactionRepository transactionRepository; //TransactionRepository METHODS
+    private final CategoryRepository categoryRepository; //CategoryRepository METHODS
 
-    public TransactionController(TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
+    public TransactionController(TransactionRepository transactionRepository, CategoryRepository categoryRepository) { // CONSTRUCTOR INJECTION
         this.transactionRepository = transactionRepository;
         this.categoryRepository = categoryRepository;
     }
@@ -29,13 +29,13 @@ public class TransactionController {
     private void attachCategory(Transaction transaction) {
         Integer categoryId = transaction.getCategory().getId();
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category " + categoryId + " not found"));
-        transaction.setCategory(category);
+                .orElseThrow(() -> new ResourceNotFoundException("Category " + categoryId + " not found")); // JUST WHEN THE CATEGORY IS NOT FOUND
+        transaction.setCategory(category); // RELATES THE TRANSACTION TO THE CATEGORY FOUND IN THE DATABASE
     }
 
     @GetMapping
-    public List<Transaction> list(@RequestParam(required = false) Type type,
-                                  @RequestParam(required = false) Integer categoryId,
+    public List<Transaction> list(@RequestParam(required = false) Type type, // QUERY PARAMETERS -> GET /transactions?type=EXPENSE
+                                  @RequestParam(required = false) Integer categoryId, // GET /transactions?categoryId=1
                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         if (startDate != null && endDate != null) {
@@ -52,16 +52,16 @@ public class TransactionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Transaction create(@Valid @RequestBody Transaction transaction) {
-        attachCategory(transaction);
+    public Transaction create(@Valid @RequestBody Transaction transaction) { // REQUEST BODY: TRANSFORM A JSON INTO A JAVA OBJECT (Transaction transaction)
+        attachCategory(transaction); // RELATES THE TRANSACTION TO THE CATEGORY FOUND IN THE DATABASE
         return transactionRepository.save(transaction);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable Integer id) { // PATH VARIABLE: ONLY ID AS A PARAMETER
         if (!transactionRepository.existsById(id)){
-            throw new ResourceNotFoundException("transaction " + id + " not found");
+            throw new ResourceNotFoundException("transaction " + id + " not found"); // ONLY IF THE ID TRANSACTION IS NOT FOUND
         }
         transactionRepository.deleteById(id);
     }
@@ -71,8 +71,8 @@ public class TransactionController {
         if (!transactionRepository.existsById(id)) {
             throw new ResourceNotFoundException("transaction " + id + " not found");
         }
-        attachCategory(transaction);
-        transaction.setId(id);
+        attachCategory(transaction); // RELATES THE TRANSACTION TO THE CATEGORY FOUND IN THE DATABASE
+        transaction.setId(id); // JSON DOESN'T SEND THE TRANSACTION ID TO THE JAVA OBJECT, SO THIS LINE MAKE THIS
         return transactionRepository.save(transaction);
     }
 
